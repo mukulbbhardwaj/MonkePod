@@ -1,10 +1,9 @@
 
 import React from "react";
-import cover from "./img/pfp.png";
 import Player from "./Player";
-import ProgressBar from "./ProgressBar";
+// import ProgressBar from "./ProgressBar";
 
-let songSrc ="https://www.youtube.com/embed/WZx3Jiq8rD4?controls=0";
+// let songSrc ="https://www.youtube.com/embed/WZx3Jiq8rD4?controls=0";
 let songName = "Song";
 let artistName = "Artist";
 function Screen() {
@@ -15,13 +14,10 @@ function Screen() {
         <div id="song-info">
           <h4> {songName}</h4>
           <h4> {artistName}</h4>
-        </div>
-        <ProgressBar />
-        <iframe
-          className="invisble"
-          src={songSrc}
-          title="YouTube video player"
-        ></iframe>
+          </div>
+          <Player/>
+
+      
       </div>
       </div>
     </div>

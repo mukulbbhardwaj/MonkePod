@@ -66,9 +66,9 @@
   width: 100%;
  
 }
-iframe {
+/* iframe {
   display: none;
-}
+} */
 .invisible {
 }
 
@@ -145,4 +145,8 @@ button {
 
 span {
   color: white;
+}
+.player{
+  /* border: 2px solid red; */
+  background-color: #000000;
 }
