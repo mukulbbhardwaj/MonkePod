@@ -11,7 +11,12 @@
   height: 100vh;
   justify-content: center;
 }
-
+.main-wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: inherit;
+}
 .component-container {
   background-color: antiquewhite;
   height: 650px;
@@ -49,6 +54,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  color: white;
   
 }
 .screen-wrapper{
