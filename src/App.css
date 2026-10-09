@@ -89,7 +89,7 @@
   box-sizing: border-box;
   width: 340px;
   height: 572px;
-  transform: scale(calc(100cqw / 340px));
+  transform: scale(var(--s, 1));
   transform-origin: top left;
   padding: 24px 16px 26px;
   border-radius: 36px;

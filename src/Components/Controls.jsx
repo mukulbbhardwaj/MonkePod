@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import Backdrop from "./Backdrop";
 import Screen from "./Screen";
@@ -12,6 +12,7 @@ const tracks = songs.map((song, index) => ({
 const ACCENTS = ["#6ea8ff", "#f0a36b", "#e489a8", "#7dcaa8", "#c9a0f2", "#e8c15a", "#6ec4d8"];
 
 function Controls() {
+  const deviceWrap = useRef(null);
   const playerA = useRef(null);
   const playerB = useRef(null);
   const slotRefs = useRef([playerA, playerB]);
@@ -160,6 +161,18 @@ function Controls() {
     window.localStorage.setItem("monkepod-theme", dark ? "dark" : "light");
   }, [dark]);
 
+  useLayoutEffect(() => {
+    const wrap = deviceWrap.current;
+    if (!wrap) return undefined;
+    const fit = () => {
+      wrap.style.setProperty("--s", String(wrap.getBoundingClientRect().width / 340));
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(wrap);
+    return () => observer.disconnect();
+  }, []);
+
   const accent = ACCENTS[currentIdx % ACCENTS.length];
   const live = playing && !buffering;
 
@@ -176,7 +189,7 @@ function Controls() {
     </button>
     <div className={`pod${live ? " live" : ""}${dark ? " dark" : ""}`} style={{ "--accent": accent }}>
       <div className="glow" aria-hidden="true" />
-      <div className="device-wrap">
+      <div className="device-wrap" ref={deviceWrap}>
       <div className="device">
         <Screen
           view={view}
