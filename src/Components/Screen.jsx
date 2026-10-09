@@ -19,6 +19,7 @@ function Screen({
   playedSeconds,
   duration,
   volume,
+  showVolume,
   onOpenMenu,
   onSeek,
   onChoose,
@@ -89,8 +90,12 @@ function Screen({
                   <span />
                 </span>
                 {stateLabel}
-                <span className="dot-sep">·</span>
-                {Math.round(volume * 100)}%
+                {showVolume && (
+                  <>
+                    <span className="dot-sep">·</span>
+                    {Math.round(volume * 100)}%
+                  </>
+                )}
               </p>
             </div>
             <div className="transport">

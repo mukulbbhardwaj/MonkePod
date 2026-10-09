@@ -4,10 +4,19 @@ import Backdrop from "./Backdrop";
 import Screen from "./Screen";
 import { songs } from "../songs";
 
-const tracks = songs.map((song, index) => ({
+const catalog = songs.map((song, index) => ({
   url: song.url,
   title: song.title || `Track ${String(index + 1).padStart(2, "0")}`,
 }));
+
+function shuffle(list) {
+  const next = [...list];
+  for (let i = next.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [next[i], next[j]] = [next[j], next[i]];
+  }
+  return next;
+}
 
 const ACCENTS = ["#6ea8ff", "#f0a36b", "#e489a8", "#7dcaa8", "#c9a0f2", "#e8c15a", "#6ec4d8"];
 
@@ -29,7 +38,9 @@ function Controls() {
   const [progress, setProgress] = useState(0);
   const [playedSeconds, setPlayedSeconds] = useState(0);
   const [durations, setDurations] = useState([0, 0]);
+  const [tracks] = useState(() => shuffle(catalog));
   const [volume, setVolume] = useState(0.8);
+  const [phone, setPhone] = useState(() => window.matchMedia("(max-width: 700px)").matches);
   const [dark, setDark] = useState(() => {
     const saved = window.localStorage.getItem("monkepod-theme");
     if (saved === "dark" || saved === "light") return saved === "dark";
@@ -72,7 +83,7 @@ function Controls() {
     setBuffering(true);
     setDurations([0, 0]);
     setPrimed([false, false]);
-  }, []);
+  }, [tracks]);
 
   const handleNext = useCallback(() => {
     if (view === "menu") {
@@ -80,7 +91,7 @@ function Controls() {
       return;
     }
     goTo(currentIdx + 1);
-  }, [view, currentIdx, goTo]);
+  }, [view, currentIdx, goTo, tracks]);
 
   const handlePrev = useCallback(() => {
     if (view === "menu") {
@@ -88,7 +99,7 @@ function Controls() {
       return;
     }
     goTo(currentIdx - 1);
-  }, [view, currentIdx, goTo]);
+  }, [view, currentIdx, goTo, tracks]);
 
   const openMenu = useCallback(() => {
     setMenuIdx(currentIdx);
@@ -161,6 +172,13 @@ function Controls() {
     window.localStorage.setItem("monkepod-theme", dark ? "dark" : "light");
   }, [dark]);
 
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 700px)");
+    const onChange = () => setPhone(media.matches);
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
   useLayoutEffect(() => {
     const wrap = deviceWrap.current;
     if (!wrap) return undefined;
@@ -202,6 +220,7 @@ function Controls() {
           playedSeconds={playedSeconds}
           duration={durations[active]}
           volume={volume}
+          showVolume={!phone}
           onOpenMenu={openMenu}
           onSeek={seek}
           onChoose={chooseFromMenu}
@@ -241,7 +260,7 @@ function Controls() {
               url={isActive ? tracks[currentIdx].url : tracks[nextIdx].url}
               playing={isActive ? playing : playing && !primed[slot]}
               muted={!isActive}
-              volume={isActive ? volume : 0}
+              volume={isActive ? (phone ? 1 : volume) : 0}
               width={360}
               height={202}
               progressInterval={250}
